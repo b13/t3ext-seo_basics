@@ -132,7 +132,7 @@ class tx_seobasics {
 			return;
 		}
 		
-		$indentAmount = t3lib_div::intInRange($configuration['indentAmount'], 1, 100);
+		$indentAmount = t3lib_utility_Math::forceIntegerInRange ($configuration['indentAmount'], 1, 100);
 			// use the "space" character as a indention type
 		if ($configuration['indentType'] == 'space') {
 			$indentElement = ' ';
