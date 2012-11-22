@@ -1,0 +1,5 @@
+  # cat=basic/enable; type=boolean; label=Enable the Google XML Sitemap: This enables the Sitemap used for Google, available under www.yourdomain.com/sitemap.xml
+xmlSitemap = 1
+
+  # cat=basic/enable; type=boolean; label=Enable the HTML Source Formatter: Does nice indention to the HTML output of your website.
+sourceFormatting = 1

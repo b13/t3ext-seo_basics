@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>db</type>
+		<description>Language labels for database tables/fields belonging to extension 'seo_basics'</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="pages.titletag">&lt;title&gt; Tag:</label>
+			<label index="pages.canonicaltag">Canonical URL:</label>
+			<label index="moduleFunction.tx_seobasics_modfunc1">SEO Management</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="pages.titletag">Title Tag:</label>
+			<label index="pages.canonicaltag">Canonical URL:</label>
+			<label index="moduleFunction.tx_seobasics_modfunc1">SEO Management</label>
+		</languageKey>
+	</data>
+</T3locallang>
