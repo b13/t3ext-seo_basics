@@ -1,21 +1,6 @@
-2012-06-22  Benjamin Mack  <benni@typo3.org>
-
-	* [FEATURE] Source Formatter: Added possibility to configure frontend output indention (Thanks to Michael Glaesser)
-
-2011-11-11  Benjamin Mack  <benni@typo3.org>
-
-	* Sitemap: Hide-in-Menu doesn't hide all the subpages as well anymore (Thanks to Lars Zimmermann)
-	* Sitemap: Fixed the issue to disable recyclers and all their subpages (Thanks to Lars Zimmermann)
-	* Sitemap: A new option allows for deactivating the resolving of shortcut root pages. This is helpful when your rootpage is a shortcut to a subpage. The option is called "resolveMainShortcut" which is set by default.: tx_seo_xmlsitemaps.10.resolveMainShortcut = 0
-
-2011-10-17  Benjamin Mack  <benni@typo3.org>
-
-	* Sitemap: Added functionality to crawl additional sites, and thus, allows for subpages like tt_news
-	* Canonical Tag: Added functionality for mountpoints
-	* Sitemap: Added XML-prologue (Thanks to Фарид Мурадимов)
-
 2011-07-28  Benjamin Mack  <benni@typo3.org>
 
+	* Release of seo_basics 0.8.1
 	* Module: Allow possibility to hide sysfolders in the overview (Thanks to Maarten Mandemaker)
 	* Sitemap: Added hook for adding additional URLs (Thanks to Claus Harup)
 	* Sitemap: Made Sitemap valid if XHTML cleaning is enabled (Thanks to Klaus Weidenbach)
