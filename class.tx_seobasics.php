@@ -38,16 +38,34 @@ class tx_seobasics {
 		if ($GLOBALS['TSFE']->page['tx_seo_canonicaltag']) {
 			$url = $GLOBALS['TSFE']->page['tx_seo_canonicaltag'];
 		} else {
+			$pageId = $GLOBALS['TSFE']->id; 
+			$pageType = $GLOBALS['TSFE']->type;
+
+			if ($GLOBALS['TSFE']->MP) {
+				$mountPointInUse = TRUE;
+				list($originalMountPage, $targetMountPage) = explode('-', $GLOBALS['TSFE']->MP);
+				$GLOBALS['TYPO3_CONF_VARS']['FE']['enable_mount_pids'] = 0;
+				$MP = $GLOBALS['TSFE']->MP;
+				$GLOBALS['TSFE']->MP = '';
+			}
+
 			$configuration = array(
-				'parameter' => $GLOBALS['TSFE']->id . ',' . $GLOBALS['TSFE']->type,
+				'parameter' => $pageId . ',' . $pageType,
 				'addQueryString' => 1,
 				'addQueryString.' => array(
-					'method' => 'GET'
+					'method' => 'GET',
+					'exclude' => 'MP'
 				),
 				'forceAbsoluteUrl' => 1
 			);
 			$url = $GLOBALS['TSFE']->cObj->typoLink_URL($configuration);
 			$url = $GLOBALS['TSFE']->baseUrlWrap($url);
+			
+			if ($mountPointInUse) {
+				$GLOBALS['TSFE']->MP = $MP;
+				$GLOBALS['TYPO3_CONF_VARS']['FE']['enable_mount_pids'] = 1;
+			}
+			
 		}
 
 		if ($url) {
@@ -108,13 +126,26 @@ class tx_seobasics {
 		}
 
 		$configuration = $GLOBALS['TSFE']->config['config']['tx_seo.']['sourceCodeFormatter.'];
+		
+			// disabled for this page type
+		if (isset($configuration['enable']) && $configuration['enable'] == '0') {
+			return;
+		}
+		
 		$indentAmount = t3lib_utility_Math::forceIntegerInRange ($configuration['indentAmount'], 1, 100);
+			// use the "space" character as a indention type
 		if ($configuration['indentType'] == 'space') {
 			$indentElement = ' ';
+			// use any character from the ASCII table
+		} elseif (t3lib_utility_Math::canBeInterpretedAsInteger($configuration['indentType'])) {
+			$indentElement = chr($configuration['indentType']);
 		} else {
+				// use tab by default
 			$indentElement = "\t";
 		}
+
 		$indention = '';
+
 		for ($i = 1; $i <= $indentAmount; $i++) {
 			$indention .= $indentElement;
 		}

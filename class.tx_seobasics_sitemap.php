@@ -35,6 +35,9 @@ class tx_seobasics_sitemap {
 	protected $conf;
 
 
+	protected $usedUrls = array();
+
+
 	/**
 	 * Generates a XML sitemap from the page structure
 	 *
@@ -106,43 +109,53 @@ class tx_seobasics_sitemap {
 		while ($parentId > 0) {
 			$parentRecord = $GLOBALS['TSFE']->sys_page->getRawRecord('pages', $parentId, $additionalFields);
 	
-			if ($parentRecord['doktype'] == 4 && ($parentRecord['shortcut'] == $id || $parentRecord['shortcut_mode'] > 0)) {
-				$treeStartingRecord = $parentRecord;
-				$parentId = $parentRecord['pid'];
-				$id = $parentRecord['uid'];
+				// check for shortcuts
+			if ($this->conf['resolveMainShortcut'] == 1) {
+				if ($parentRecord['doktype'] == 4 && ($parentRecord['shortcut'] == $id || $parentRecord['shortcut_mode'] > 0)) {
+					$treeStartingRecord = $parentRecord;
+					$id = $parentId = $parentRecord['pid'];
+				} else {
+					break;
+				}
 			} else {
-				break;
+					// just traverse the rootline up
+				$treeStartingRecord = $parentRecord;
+				$id = $parentId = $parentRecord['pid'];
 			}
 		}
 
 		$tree = t3lib_div::makeInstance('t3lib_pageTree');
 		$tree->addField('SYS_LASTCHANGED', 1);
 		$tree->addField('crdate', 1);
-			// remove "hide-in-menu" items
-			// be aware: currently, this also removes the subpages that are below the hide-in-menu pages
-			// but it's currently wanted by design
-		if ($this->conf['renderHideInMenu'] != 1) {
-			$addWhere = ' AND doktype != 5 AND nav_hide = 0';
-		}
-		$tree->init('AND no_search = 0 ' . $addWhere . $GLOBALS['TSFE']->sys_page->enableFields('pages'));
+		$tree->addField('no_search', 1);
+		$tree->addField('doktype', 1);
+		$tree->addField('nav_hide', 1);
+
+			// disable recycler and everything below
+		$tree->init('AND doktype!=255' . $GLOBALS['TSFE']->sys_page->enableFields('pages'));
 
 
 			// create the tree from starting point
 		$tree->getTree($id, $depth, '');
-
-			// creating the XML output
-		$content = '';
-		$usedUrls = array();
 
 		$treeRecords = $tree->tree;
 		array_unshift($treeRecords, array('row' => $treeStartingRecord));
 
 		foreach ($treeRecords as $row) {
 			$item = $row['row'];
-				// don't render spacers, sysfolders etc
-			if ($item['doktype'] >= 199) {
+
+				// don't render spacers, sysfolders etc, and the ones that have the
+				// "no_search" checkbox
+			if ($item['doktype'] >= 199 || intval($item['no_search']) == 1) {
 				continue;
 			}
+
+				// remove "hide-in-menu" items
+			if ($this->conf['renderHideInMenu'] == 0 && intval($item['nav_hide']) == 1) {
+				continue;
+			}
+
+
 			$conf = array(
 				'parameter' => $item['uid']
 			);
@@ -159,28 +172,57 @@ class tx_seobasics_sitemap {
 			}
 			$url = htmlspecialchars($url);
 
-			if (in_array($url, $usedUrls)) {
+			if (isset($this->usedUrls[$url])) {
 				continue;
 			}
-			$usedUrls[] = $url;
-
 			$lastmod = ($item['SYS_LASTCHANGED'] ? $item['SYS_LASTCHANGED'] : $item['crdate']);
 
 				// format date, see http://www.w3.org/TR/NOTE-datetime for possible formats
 			$lastmod = date('c', $lastmod);
 
+			$this->usedUrls[$url] = array(
+				'url' => $url,
+				'lastmod' => $lastmod
+			);
+		}
+		
+		// check for additional pages
+		$additionalPages = trim($this->conf['scrapeLinksFromPages']);
+		if ($additionalPages) {
+			$additionalPages = t3lib_div::trimExplode(',', $additionalPages, TRUE);
+			if (count($additionalPages)) {
+				$additionalSubpagesOfPages = $this->conf['scrapeLinksFromPages.']['includingSubpages'];
+				$additionalSubpagesOfPages = t3lib_div::trimExplode(',', $additionalSubpagesOfPages);
+				$this->fetchAdditionalUrls($additionalPages, $additionalSubpagesOfPages);
+			}
+		}
+
+
+			// creating the XML output
+		$content = '';
+
+		
+			// create the content
+		foreach ($this->usedUrls as $urlData) {
+			if ($urlData['lastmod']) {
+				$lastmod = '
+		<lastmod>' . htmlspecialchars($urlData['lastmod']) . '</lastmod>';
+			} else {
+				$lastmod = '';
+			}
+
 			$content .= '
 	<url>
-		<loc>'.$url.'</loc>
-		<lastmod>'.$lastmod.'</lastmod>
+		<loc>' . htmlspecialchars($urlData['url']) . '</loc>' . $lastmod . '
 	</url>';
 		}
+
 
 			// hook for adding additional urls
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['seo_basics']['sitemap']['additionalUrlsHook'])) {
 			$_params = array(
 				'content' => &$content,
-				'usedUrls' => &$usedUrls,
+				'usedUrls' => &$this->usedUrls,
 			);
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['seo_basics']['sitemap']['additionalUrlsHook'] as $_funcRef) {
 				t3lib_div::callUserFunction($_funcRef, $_params, $this);
@@ -189,15 +231,129 @@ class tx_seobasics_sitemap {
 
 			// see https://www.google.com/webmasters/tools/docs/en/protocol.html for complete format
 		$content =
-'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">'.$content.'
+'<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">' . $content . '
 </urlset>';
 
 		return $content;
 	}
+	
+	
+	/**
+	 * fetches all URLs from existing pages + the subpages (1-level)
+	 * and adds them to the $usedUrls array of the object
+	 * 
+	 * @param array $additionalPages
+	 * @param array $additionalSubpagesOfPages array to keep track which subpages have been fetched already
+	 */
+	protected function fetchAdditionalUrls($additionalPages, $additionalSubpagesOfPages = array()) {
+
+		$baseUrl = t3lib_div::getIndpEnv('TYPO3_SITE_URL');
+		foreach ($additionalPages as $additionalPage) {
+			$newlyFoundUrls = array();
+			if (in_array($additionalPage, $additionalSubpagesOfPages)) {
+				$crawlSubpages = TRUE;
+			} else {
+				$crawlSubpages = FALSE;
+			}
+
+			$additionalPageId = intval($additionalPage);
+			if ($additionalPageId) {
+				$additionalUrl = $baseUrl . 'index.php?id=' . $additionalPageId;
+			} else {
+				$pageParts = parse_url($additionalPage);
+				if (!$pageParts['scheme']) {
+					$additionalUrl = $baseUrl . $additionalPage;
+				} else {
+					$additionalUrl = $additionalPage;
+				}
+			}
+			$additionalUrl = htmlspecialchars($additionalUrl);
+			$foundUrls = $this->fetchLinksFromPage($additionalUrl);
+
+				// add the urls to the used urls
+			foreach ($foundUrls as $url) {
+				if (!isset($this->usedUrls[$url]) && !isset($this->usedUrls[$url . '/'])) {
+					$this->usedUrls[$url] = array('url' => $url);
+					if ($crawlSubpages) {
+						$newlyFoundUrls[] = $url;
+					}
+				}
+			}
+
+				// now crawl the subpages as well
+			if ($crawlSubpages) {
+				foreach ($newlyFoundUrls as $subPage) {
+					$foundSuburls = $this->fetchLinksFromPage($subPage);
+					foreach ($foundSuburls as $url) {
+						if (!isset($this->usedUrls[$url]) && !isset($this->usedUrls[$url . '/'])) {
+							$this->usedUrls[$url] = array('url' => $url);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+
+	/**
+	 * function to fetch all links from a page
+	 * by making a call to fetch the contents of the URL (via getURL)
+	 * and then applying certain regular expressions
+	 * 
+	 * also takes "nofollow" into account (!)
+	 * 
+	 * @param string $url
+	 * @return array the found URLs
+	 */
+	protected function fetchLinksFromPage($url) {
+		$content = t3lib_div::getUrl($url);
+		$foundLinks = array();
+
+		$result = array();
+		$regexp = '/<a\s+(?:[^"\'>]+|"[^"]*"|\'[^\']*\')*href=("[^"]+"|\'[^\']+\'|[^<>\s]+)([^>]+)/i';
+		preg_match_all($regexp, $content, $result);
+
+		$baseUrl = t3lib_div::getIndpEnv('TYPO3_SITE_URL');
+		foreach ($result[1] as $pos => $link) {
+		
+			if (strpos($result[2][$pos], '"nofollow"') !== FALSE || strpos($result[0][$pos], '"nofollow"') !== FALSE) {
+				continue;
+			}
+		
+			$link = trim($link, '"');
+			list($link) = explode('#', $link);
+			$linkParts = parse_url($link);
+			if (!$linkParts['scheme']) {
+				$link = $baseUrl . ltrim($link, '/');
+			}
+
+			if ($linkParts['scheme'] == 'javascript') {
+				continue;
+			}
+
+			if ($linkParts['scheme'] == 'mailto') {
+				continue;
+			}
+			
+				// dont include files
+			$fileName = basename($linkParts['path']);
+			if (strpos($fileName, '.') !== FALSE && file_exists(PATH_site . ltrim($linkParts['path'], '/'))) {
+				continue;
+			}
+			
+			if ($link != $url) {
+				$foundLinks[$link] = $link;
+			}
+		}
+		return $foundLinks;
+	}
+	
 }
 
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/seo_basics/class.tx_seobasics_sitemap.php']) {
    include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/seo_basics/class.tx_seobasics_sitemap.php']);
 }
+
 ?>

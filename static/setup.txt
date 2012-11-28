@@ -80,10 +80,10 @@ tx_seo_xmlsitemaps = PAGE
 tx_seo_xmlsitemaps {
 	typeNum = 776
 	config.disableAllHeaderCode = 1
-	config.renderCharset = UTF-8
-	config.xmlprologue = xml_10
+	config.renderCharset = utf-8
 	config.additionalHeaders = Content-type: text/xml
 	config.xhtml_cleaning = 0
 	10 = USER
 	10.userFunc = tx_seobasics_sitemap->renderXMLSitemap
+	10.resolveMainShortcut = 1
 }
