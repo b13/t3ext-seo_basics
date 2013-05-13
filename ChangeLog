@@ -1,5 +1,6 @@
 2013-05-13  Benjamin Mack  <benni@typo3.org>
 
+	* [RELEASE] Release of seo_basics 0.8.5
 	* [CLEANUP] Set requirements to TYPO3 4.5, and added compatibility for TYPO3 6.1.x
 
 2012-06-22  Benjamin Mack  <benni@typo3.org>
