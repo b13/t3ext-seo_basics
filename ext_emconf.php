@@ -15,7 +15,11 @@ $EM_CONF[$_EXTKEY] = array(
 	'description' => 'Introduces a separate field for the title-tag per page, easy and SEO-friendly keywords and description editing in a new module as well as a Google Sitemap (XML) and a clean output in the HTML Source code.',
 	'category' => 'be',
 	'shy' => 0,
+<<<<<<< HEAD
 	'version' => '0.8.4-dev',
+=======
+	'version' => '0.8.5',
+>>>>>>> [CLEANUP] Set requirements to TYPO3 4.5, and added compatibility for TYPO3 6.1.x
 	'dependencies' => '',
 	'conflicts' => '',
 	'priority' => '',
@@ -35,6 +39,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'constraints' => array(
 		'depends' => array(
 			'realurl' => '0.0.0-0.0.0',
+			'typo3' => '4.5.0-6.1.99',
 		),
 		'conflicts' => array(
 		),

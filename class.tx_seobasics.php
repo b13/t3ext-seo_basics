@@ -132,16 +132,32 @@ class tx_seobasics {
 			return;
 		}
 		
-		$indentAmount = t3lib_utility_Math::forceIntegerInRange ($configuration['indentAmount'], 1, 100);
+		// 4.5 compatibility
+		if (method_exists('t3lib_div', 'intInRange')) {
+			$indentAmount = t3lib_div::intInRange($configuration['indentAmount'], 1, 100);
+		} else {
+			$indentAmount = t3lib_utility_Math::forceIntegerInRange($configuration['indentAmount'], 1, 100);
+		}
+
 			// use the "space" character as a indention type
 		if ($configuration['indentType'] == 'space') {
 			$indentElement = ' ';
 			// use any character from the ASCII table
-		} elseif (t3lib_utility_Math::canBeInterpretedAsInteger($configuration['indentType'])) {
-			$indentElement = chr($configuration['indentType']);
 		} else {
-				// use tab by default
-			$indentElement = "\t";
+			$indentTypeIsNumeric = FALSE;
+			// 4.5 compatibility
+			if (method_exists('t3lib_div', 'testInt')) {
+				$indentTypeIsNumeric == t3lib_div::testInt($configuration['indentType']);
+			} else {
+				$indentTypeIsNumeric = t3lib_utility_Math::canBeInterpretedAsInteger($configuration['indentType']);
+			}
+
+			if ($indentTypeIsNumeric) {
+				$indentElement = chr($configuration['indentType']);
+			} else {
+					// use tab by default
+				$indentElement = "\t";
+			}
 		}
 
 		$indention = '';
@@ -205,8 +221,4 @@ class tx_seobasics {
 
 }
 
-
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/seo_basics/class.tx_seobasics.php']) {
-   include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/seo_basics/class.tx_seobasics.php']);
-}
 ?>

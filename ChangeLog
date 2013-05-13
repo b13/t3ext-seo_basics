@@ -1,3 +1,7 @@
+2013-05-13  Benjamin Mack  <benni@typo3.org>
+
+	* [CLEANUP] Set requirements to TYPO3 4.5, and added compatibility for TYPO3 6.1.x
+
 2012-06-22  Benjamin Mack  <benni@typo3.org>
 
 	* [FEATURE] Source Formatter: Added possibility to configure frontend output indention (Thanks to Michael Glaesser)
