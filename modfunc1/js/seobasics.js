@@ -49,7 +49,7 @@ var SEO = {
 	checkTitleTag: function(el) {
 		var size = el.value.length;
 		var color = "green";
-		if (size > 70) { color = "red"; }
+		if (size > 65) { color = "red"; }
 		if (size < 50) { color = "yellow"; }
 		if (size == 0) { color = "white"; }
 		el.style.backgroundColor = this.color[color];
@@ -64,8 +64,8 @@ var SEO = {
 			if (keywords) { numKeywords = keywords.length+1; }
 		}
 		var color = "green";
-		if (numKeywords > 11) { color = "red"; }
-		if (numKeywords < 3)  { color = "yellow"; }
+		if (numKeywords > 6) { color = "red"; }
+		if (numKeywords < 2)  { color = "yellow"; }
 		if (numKeywords < 1)  { color = "white"; }
 		el.style.backgroundColor = this.color[color];
 	},
