@@ -26,15 +26,6 @@
  * SEO Management extension
  *
  * @author	Benjamin Mack <benni@typo3.org>
- */
-
-require_once(PATH_t3lib.'class.t3lib_pagetree.php');
-require_once(PATH_t3lib.'class.t3lib_extobjbase.php');
-
-/**
- * SEO Management extension
- *
- * @author	Benjamin Mack <benni@typo3.org>
  * @package TYPO3
  * @subpackage tx_seobasics
  */

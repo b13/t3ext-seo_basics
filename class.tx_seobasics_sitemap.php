@@ -28,9 +28,7 @@
  * 
  * This package includes all functions for generating XML sitemaps
  */
-
-require_once(PATH_t3lib.'class.t3lib_pagetree.php');
-
+ 
 class tx_seobasics_sitemap {
 	protected $conf;
 
