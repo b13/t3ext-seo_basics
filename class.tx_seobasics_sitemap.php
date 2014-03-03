@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *  
-*  (c) 2007-2011 Benjamin Mack <benni@typo3.org>
+*  (c) 2007-2014 Benjamin Mack <benni@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is 
@@ -30,8 +30,8 @@
  */
  
 class tx_seobasics_sitemap {
-	protected $conf;
 
+	protected $conf;
 
 	protected $usedUrls = array();
 
@@ -49,44 +49,9 @@ class tx_seobasics_sitemap {
 		$depth = 50;
 		$additionalFields = 'uid,pid,doktype,shortcut,crdate,SYS_LASTCHANGED';
 
-
-		// precedence: $conf['useDomain'], config.baseURL, the domain record, config.absRefPrefix
-		if (isset($conf['useDomain'])) {
-			if ($conf['useDomain'] == 'current') {
-				$baseURL = t3lib_div::getIndpEnv('TYPO3_SITE_URL');
-			} else {
-				$baseURL = $conf['useDomain'];
-			}
-		}
-		
-		if (!$baseURL) {
-			$baseURL = $GLOBALS['TSFE']->baseUrl;
-		}
-
-		if (!$baseURL) {
-			$domainPid = $GLOBALS['TSFE']->findDomainRecord();
-			if ($domainPid) {
-				$domainRecords = $GLOBALS['TSFE']->sys_page->getRecordsByField('sys_domain', 'pid', $domainPid, ' AND redirectTo = ""', '', 'sorting ASC', '1');
-				if (count($domainRecords)) {
-					$domainRecord = reset($domainRecords);
-					$baseURL = $domainRecord['domainName'];
-				}
-			}
-		}
-
-		if ($baseURL && strpos($baseURL, '://') === FALSE) {
-			$baseURL = 'http://' . $baseURL;
-		}
-
-		if (!$baseURL && $GLOBALS['TSFE']->absRefPrefix) {
-			$baseURL = $GLOBALS['TSFE']->absRefPrefix;
-		}
-		if (!$baseURL) {
-			die('Please add a domain record at the root of your TYPO3 site in your TYPO3 backend.');
-		}
-
-		// add appending slash
-		$baseURL = rtrim($baseURL, '/') . '/';
+		$baseURL = $this->getBaseUrl();
+		$baseURLParts = parse_url($baseURL);
+		$currentHostname = $baseURLParts['host'];
 
 			// -- do a 301 redirect to the "main" sitemap.xml if not already there
 		if ($this->conf['redirectToMainSitemap'] && $baseURL) {
@@ -202,6 +167,12 @@ class tx_seobasics_sitemap {
 		
 			// create the content
 		foreach ($this->usedUrls as $urlData) {
+
+			// skip pages that are not on the same domain
+			if (stripos($urlData['url'], $currentHostname) === FALSE) {
+				continue;
+			}
+
 			if ($urlData['lastmod']) {
 				$lastmod = '
 		<lastmod>' . htmlspecialchars($urlData['lastmod']) . '</lastmod>';
@@ -346,7 +317,54 @@ class tx_seobasics_sitemap {
 		}
 		return $foundLinks;
 	}
-	
+
+
+	/**
+	 * fetches the domain URL
+	 * that is used for all domains
+	 */
+	protected function getBaseUrl() {
+
+		// precedence: $this->conf['useDomain'], config.baseURL, the domain record, config.absRefPrefix
+		if (isset($this->conf['useDomain'])) {
+			if ($this->conf['useDomain'] == 'current') {
+				$baseURL = t3lib_div::getIndpEnv('TYPO3_SITE_URL');
+			} else {
+				$baseURL = $this->conf['useDomain'];
+			}
+		}
+
+		if (!$baseURL) {
+			$baseURL = $GLOBALS['TSFE']->baseUrl;
+		}
+
+		if (!$baseURL) {
+			$domainPid = $GLOBALS['TSFE']->findDomainRecord();
+			if ($domainPid) {
+				$domainRecords = $GLOBALS['TSFE']->sys_page->getRecordsByField('sys_domain', 'pid', $domainPid, ' AND redirectTo = ""', '', 'sorting ASC', '1');
+				if (count($domainRecords)) {
+					$domainRecord = reset($domainRecords);
+					$baseURL = $domainRecord['domainName'];
+				}
+			}
+		}
+
+		if ($baseURL && strpos($baseURL, '://') === FALSE) {
+			$baseURL = 'http://' . $baseURL;
+		}
+
+		if (!$baseURL && $GLOBALS['TSFE']->absRefPrefix) {
+			$baseURL = $GLOBALS['TSFE']->absRefPrefix;
+		}
+
+		if (!$baseURL) {
+			die('Please add a domain record at the root of your TYPO3 site in your TYPO3 backend.');
+		}
+
+		// add appending slash
+		$baseURL = rtrim($baseURL, '/') . '/';
+		return $baseURL;
+	}
 }
 
 ?>

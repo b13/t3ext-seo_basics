@@ -1,3 +1,7 @@
+2014-02-19  Benjamin Mack  <benni@typo3.org>
+
+	* [BUGFIX] Sitemap should not include pages that are not on the same domain
+
 2013-05-13  Benjamin Mack  <benni@typo3.org>
 
 	* [RELEASE] Release of seo_basics 0.8.5
