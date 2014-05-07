@@ -341,7 +341,7 @@ class tx_seobasics_sitemap {
 		if (!$baseURL) {
 			$domainPid = $GLOBALS['TSFE']->findDomainRecord();
 			if ($domainPid) {
-				$domainRecords = $GLOBALS['TSFE']->sys_page->getRecordsByField('sys_domain', 'pid', $domainPid, ' AND redirectTo = ""', '', 'sorting ASC', '1');
+				$domainRecords = $GLOBALS['TSFE']->sys_page->getRecordsByField('sys_domain', 'pid', $domainPid, ' AND hidden=0 AND redirectTo = ""', '', 'sorting ASC', '1');
 				if (count($domainRecords)) {
 					$domainRecord = reset($domainRecords);
 					$baseURL = $domainRecord['domainName'];
