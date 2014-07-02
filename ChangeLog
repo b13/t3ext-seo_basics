@@ -1,3 +1,7 @@
+2014-07-02  Benjamin Mack  <benni@typo3.org>
+
+	* [BUGFIX] Sitemap does not work with 6.2, see #58638
+
 2014-05-07  Benjamin Mack  <benni@typo3.org>
 
 	* [BUGFIX] Sitemap: Domain prefix also fetches hidden domains
