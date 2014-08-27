@@ -87,8 +87,8 @@ class tx_seobasics_sitemap {
 			}
 		}
 
-		if (version_compare(TYPO3_branch, '6.2', '>=')) {
-			$tree = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('B13\\SeoBasics\\Xclass\\PageTreeView');
+		if (version_compare(TYPO3_branch, '6.1', '>=')) {
+			$tree = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('B13\\SeoBasics\\Tree\\PageTreeView');
 		} else {
 			$tree = t3lib_div::makeInstance('t3lib_pageTree');
 		}

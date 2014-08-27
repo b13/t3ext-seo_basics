@@ -1,6 +1,6 @@
 <?php
 
-namespace B13\SeoBasics\Xclass;
+namespace B13\SeoBasics\Tree;
 
 /***************************************************************
 *  Copyright notice
@@ -33,39 +33,15 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @author	Benjamin Mack (benni@typo3.org)
  * @package	B13\SeoBasics
  * 
- * With TYPO3 CMS 6.2,
+ * Note:
+ * With TYPO3 CMS 6.1 (especially commit https://review.typo3.org/#/c/22632/)
+ * there is a change that the t3lib_pageTree is used for BE uses
+ * the solution for now is to extend the class and do an additional check
+ * However, a generic tree function for Frontend purposes should be 
+ * developed and either be included in here on the TYPO3 CMS core.
  */
 
 class PageTreeView extends \TYPO3\CMS\Backend\Tree\View\PageTreeView {
-	/**
-	 * Initialize the tree class. Needs to be overwritten
-	 * Will set ->fieldsArray, ->backPath and ->clause
-	 *
-	 * @param string Record WHERE clause
-	 * @param string Record ORDER BY field
-	 * @return void
-	 * @todo Define visibility
-	 */
-	public function init($clause = '', $orderByFields = '') {
-		// Setting title attribute to use.
-		$this->titleAttrib = 'title';
-		// Setting backpath.
-		$this->backPath = $GLOBALS['BACK_PATH'];
-		// Setting clause
-		if ($clause) {
-			$this->clause = $clause;
-		}
-		if ($orderByFields) {
-			$this->orderByFields = $orderByFields;
-		}
-		if (!is_array($this->MOUNTS)) {
-			// Dummy
-			$this->MOUNTS = array(0 => 0);
-		}
-		// Setting this to FALSE disables the use of array-trees by default
-		$this->data = FALSE;
-		$this->dataLookup = FALSE;
-	}
 
 	/**
 	 * Fetches the data for the tree
@@ -91,6 +67,7 @@ class PageTreeView extends \TYPO3\CMS\Backend\Tree\View\PageTreeView {
 		$idH = array();
 		// Traverse the records:
 		while ($crazyRecursionLimiter > 0 && ($row = $this->getDataNext($res, $subCSSclass))) {
+			// webmount check removed by bmack
 
 			$a++;
 			$crazyRecursionLimiter--;
