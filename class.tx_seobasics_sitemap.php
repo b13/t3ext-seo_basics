@@ -101,6 +101,17 @@ class tx_seobasics_sitemap {
 			// disable recycler and everything below
 		$tree->init('AND doktype!=255' . $GLOBALS['TSFE']->sys_page->enableFields('pages'));
 
+		// Only select pages starting from next root page in rootline
+		$rootline = $GLOBALS['TSFE']->rootLine;
+	        if (count($rootline) > 0) {
+	            $i = count($rootline) - 1;
+	            $page = $rootline[$i];
+	            while (!(boolean)$page['is_siteroot'] && $i >= 0) {
+	                $i--;
+	                $page = $rootline[$i];
+	
+	            }
+	        }
 
 			// create the tree from starting point
 		$tree->getTree($id, $depth, '');
