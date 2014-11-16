@@ -3,34 +3,33 @@
 namespace B13\SeoBasics\Tree;
 
 /***************************************************************
-*  Copyright notice
-*  
-*  (c) 2014 Benjamin Mack <benni@typo3.org>
-*  All rights reserved
-*
-*  This script is part of the Typo3 project. The Typo3 project is 
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-* 
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-* 
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+ *  Copyright notice - MIT License (MIT)
+ *
+ *  (c) 2007-2014 Benni Mack <benni@typo3.org>
+ *  All rights reserved
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal
+ *  in the Software without restriction, including without limitation the rights
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the Software is
+ *  furnished to do so, subject to the following conditions:
+ *
+ *  The above copyright notice and this permission notice shall be included in
+ *  all copies or substantial portions of the Software.
+ *
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ *  THE SOFTWARE.
+ ***************************************************************/
 
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /** 
- * @author	Benjamin Mack (benni@typo3.org)
  * @package	B13\SeoBasics
  * 
  * Note:
@@ -52,7 +51,6 @@ class PageTreeView extends \TYPO3\CMS\Backend\Tree\View\PageTreeView {
 	 * @param string $blankLineCode ? (internal)
 	 * @param string $subCSSclass CSS class to use for <td> sub-elements
 	 * @return integer The count of items on the level
-	 * @todo Define visibility
 	 */
 	public function getTree($uid, $depth = 999, $depthData = '', $blankLineCode = '', $subCSSclass = '') {
 		// Buffer for id hierarchy is reset:
@@ -133,7 +131,6 @@ class PageTreeView extends \TYPO3\CMS\Backend\Tree\View\PageTreeView {
 	 * @return array item data array OR FALSE if end of elements.
 	 * @access private
 	 * @see getDataInit()
-	 * @todo Define visibility
 	 */
 	public function getDataNext(&$res, $subCSSclass = '') {
 		if (is_array($this->data)) {

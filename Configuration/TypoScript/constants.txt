@@ -1,0 +1,17 @@
+
+plugin.tx_seo {
+	# cat=plugin.seo/string; type=string; label= Wrap around the <title> tag: Used for static additions to the title tag like the sitename. This is a no-trim-wrap string, fill in the static code between the vertical bars.
+	titleWrap = |||
+
+	# cat=plugin.seo/string; type=string; label= Wrap around the keywords meta tag: Used for static additions like site-wide keywords. This is a no-trim-wrap string, fill in the static code between the vertical bars.
+	keywordsWrap = |||
+
+	# cat=plugin.seo/string; type=string; label= Wrap around the description meta tag: Used for static additions like a site-wide description. This is a no-trim-wrap string, fill in the static code between the vertical bars.
+	descriptionWrap = |||
+
+	# cat=plugin.seo/string; type=boolean; label= Append the sitetitle to the <title> tag: Add the site title as defined in your sys_template, as another static keyword after the titleWrap. This extension only offers the site title to append instead of to prepend as it is more important to have page-specific data at the beginning of the title tag. 
+	titleWrapAppendSiteTitle = 1
+
+	# cat=plugin.seo/string; type=boolean; label= Enable the canonical tag: Adds a new tag for showing the unique URL for this page.
+	enableCanonicalTag = 1
+}

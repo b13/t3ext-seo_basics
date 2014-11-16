@@ -1,5 +1,5 @@
 #
-# Table structure for table 'pages'
+# Add fields for table 'pages'
 #
 CREATE TABLE pages (
 	tx_seo_titletag tinytext,
@@ -7,7 +7,7 @@ CREATE TABLE pages (
 );
 
 #
-# Table structure for table 'pages_language_overlay'
+# Add fields for table 'pages_language_overlay'
 #
 CREATE TABLE pages_language_overlay (
 	tx_seo_titletag tinytext,
