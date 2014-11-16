@@ -135,7 +135,7 @@ class SeoModule extends \TYPO3\CMS\Backend\Module\AbstractFunctionModule {
 
 			// Add Javascript
 			$this->pObj->doc->getPageRenderer()->loadJquery();
-			$this->pObj->doc->getPageRenderer()->addJsFile('EXT:seo_basics/Resources/Public/JavaScript/SeoModule.js');
+			$this->pObj->doc->getPageRenderer()->addJsFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('seo_basics') . 'Resources/Public/JavaScript/SeoModule.js');
 
 
 			// render depth selector
@@ -148,7 +148,7 @@ class SeoModule extends \TYPO3\CMS\Backend\Module\AbstractFunctionModule {
 			}
 
 			$content .= BackendUtility::getFuncCheck($id, 'SET[hideShortcuts]', $this->pObj->MOD_SETTINGS['hideShortcuts'], 'index.php', '', 'id="SET[hideShortcuts]"');
-			$content .= '<label for="SET[hideShortcuts]">Hide Shortcuts</label>&nbsp;&nbsp;'; 
+			$content .= '<label for="SET[hideShortcuts]">Hide Shortcuts</label>&nbsp;&nbsp;';
 			$content .= BackendUtility::getFuncCheck($id, 'SET[hideDisabled]', $this->pObj->MOD_SETTINGS['hideDisabled'], 'index.php', '', 'id="SET[hideDisabled]"');
 			$content .= '<label for="SET[hideDisabled]">Hide Disabled Pages</label>&nbsp;&nbsp;<br/>'; 
 			$content .= BackendUtility::getFuncCheck($id, 'SET[hideSysFolders]', $this->pObj->MOD_SETTINGS['hideSysFolders'], 'index.php', '', 'id="SET[hideSysFolders]"');
