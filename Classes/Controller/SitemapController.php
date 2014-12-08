@@ -81,6 +81,8 @@ class SitemapController {
 		$id = (int)$this->getFrontendController()->id;
 		$treeRecords = $this->fetchPagesFromTreeStructure($id);
 
+
+		$excludedPageUids = GeneralUtility::trimExplode(',', $this->sitemapConfiguration['excludePages'], TRUE);
 		foreach ($treeRecords as $row) {
 			$item = $row['row'];
 
@@ -92,6 +94,11 @@ class SitemapController {
 
 			// remove "hide-in-menu" items
 			if ($this->sitemapConfiguration['renderHideInMenu'] == 0 && intval($item['nav_hide']) == 1) {
+				continue;
+			}
+
+			// explicitly remove items based on a deny-list
+			if (!empty($excludedPageUids) && in_array($item['uid'], $excludedPageUids)) {
 				continue;
 			}
 
