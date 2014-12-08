@@ -47,8 +47,6 @@ configuration and without dozens of not-quite-perfect extensions.
 
 ToDo
 ----
-* Add composer.json
-* Rewrite Documentation
 * Check all labels
 * Release 1.0
 * Add new og: fields
