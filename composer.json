@@ -2,11 +2,11 @@
     "name": "b13/typo3-seo_basics",
     "type": "typo3-cms-extension",
     "description": "Basic SEO features for TYPO3",
-    "homepage": "http://typo3.org/extensions/repository/view/seo_basics",
+    "homepage": "https://github.com/b13/t3ext-seo_basics",
     "license": ["MIT License"],
     "keywords": ["TYPO3 CMS", "SEO Basics"],
     "support": {
-        "issues": "https://forge.typo3.org/projects/extension-seo_basics"
+        "issues": "https://github.com/b13/t3ext-seo_basics/issues"
     },
-    "version": "0.8.8"
+    "version": "0.9.0"
 }
