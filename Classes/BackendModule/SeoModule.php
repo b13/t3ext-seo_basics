@@ -139,7 +139,7 @@ class SeoModule extends \TYPO3\CMS\Backend\Module\AbstractFunctionModule {
 
 
 			// render depth selector
-			$content = BackendUtility::getFuncMenu($id, 'SET[depth]', $this->pObj->MOD_SETTINGS['depth'], $this->pObj->MOD_MENU['depth'], 'index.php');
+			$content = BackendUtility::getFuncMenu($id, 'SET[depth]', $this->pObj->MOD_SETTINGS['depth'], $this->pObj->MOD_MENU['depth']);
 
 			// if there are multiple languages, show dropdown to narrow it down.
 			if ($this->hasAvailableLanguages) {
@@ -147,13 +147,13 @@ class SeoModule extends \TYPO3\CMS\Backend\Module\AbstractFunctionModule {
 				$content .= BackendUtility::getFuncMenu($id, 'SET[lang]', $this->pObj->MOD_SETTINGS['lang'], $this->pObj->MOD_MENU['lang'], 'index.php').'<br/>';
 			}
 
-			$content .= BackendUtility::getFuncCheck($id, 'SET[hideShortcuts]', $this->pObj->MOD_SETTINGS['hideShortcuts'], 'index.php', '', 'id="SET[hideShortcuts]"');
+			$content .= BackendUtility::getFuncCheck($id, 'SET[hideShortcuts]', $this->pObj->MOD_SETTINGS['hideShortcuts'], '', '', 'id="SET[hideShortcuts]"');
 			$content .= '<label for="SET[hideShortcuts]">Hide Shortcuts</label>&nbsp;&nbsp;';
-			$content .= BackendUtility::getFuncCheck($id, 'SET[hideDisabled]', $this->pObj->MOD_SETTINGS['hideDisabled'], 'index.php', '', 'id="SET[hideDisabled]"');
+			$content .= BackendUtility::getFuncCheck($id, 'SET[hideDisabled]', $this->pObj->MOD_SETTINGS['hideDisabled'], '', '', 'id="SET[hideDisabled]"');
 			$content .= '<label for="SET[hideDisabled]">Hide Disabled Pages</label>&nbsp;&nbsp;<br/>'; 
-			$content .= BackendUtility::getFuncCheck($id, 'SET[hideSysFolders]', $this->pObj->MOD_SETTINGS['hideSysFolders'], 'index.php', '', 'id="SET[hideSysFolders]"');
+			$content .= BackendUtility::getFuncCheck($id, 'SET[hideSysFolders]', $this->pObj->MOD_SETTINGS['hideSysFolders'], '', '', 'id="SET[hideSysFolders]"');
 			$content .= '<label for="SET[hideSysfolders]">Hide System Folders</label>&nbsp;&nbsp;<br/>'; 	
-			$content .= BackendUtility::getFuncCheck($id, 'SET[hideNotInMenu]', $this->pObj->MOD_SETTINGS['hideNotInMenu'], 'index.php', '', 'id="SET[hideNotInMenu]"');
+			$content .= BackendUtility::getFuncCheck($id, 'SET[hideNotInMenu]', $this->pObj->MOD_SETTINGS['hideNotInMenu'], '', '', 'id="SET[hideNotInMenu]"');
 			$content .= '<label for="SET[hideNotInMenu]">Hide Not in menu</label>&nbsp;&nbsp;<br/>'; 				
 
 			// Save previous editing when submit was hit
@@ -473,7 +473,8 @@ class SeoModule extends \TYPO3\CMS\Backend\Module\AbstractFunctionModule {
 		if ($langOnly) { $addParams .= '&langOnly='.$langOnly; }
 		if ($hideShortcuts) { $addParams .= '&hideShortcuts='.$hideShortcuts; }
 		if ($hideDisabled) { $addParams .= '&hideDisabled='.$hideDisabled; }
-		return htmlspecialchars('index.php?id='.$this->pObj->id.$addParams);
+
+		return BackendUtility::getModuleUrl(GeneralUtility::_GET('M'), array('id' => $this->pObj->id)) . $addParams;
 	}
 
 
