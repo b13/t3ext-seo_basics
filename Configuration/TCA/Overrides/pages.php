@@ -9,7 +9,6 @@ $additionalColumns = array(
 		'config' => array(
 			'type' => 'input',
 			'size' => 70,
-			'max'  => 70,
 			'eval' => 'trim'
 		)
 	),
@@ -19,7 +18,6 @@ $additionalColumns = array(
 		'config'  => array(
 			'type' => 'input',
 			'size' => 70,
-			'max'  => 70,
 			'eval' => 'trim'
 		)
 	)
