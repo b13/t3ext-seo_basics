@@ -80,7 +80,7 @@ tx_seo_xmlsitemaps {
 	typeNum = 776
 	config.disableAllHeaderCode = 1
 	config.renderCharset = utf-8
-	config.additionalHeaders = Content-type: text/xml
+	config.additionalHeaders.10.header = Content-type: text/xml
 	config.xhtml_cleaning = 0
 	10 = USER
 	10.userFunc = B13\SeoBasics\Controller\SitemapController->renderXMLSitemap
