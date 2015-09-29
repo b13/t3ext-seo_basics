@@ -11,5 +11,12 @@
     "support": {
         "issues": "https://github.com/b13/t3ext-seo_basics/issues"
     },
-    "version": "0.9.0"
+    "version": "0.9.0",
+	"require": {
+		"typo3": "6.2.0 - 7.2.99"
+	},
+	"suggest": {
+		"realurl": "*",
+		"cooluri": "*"
+	}
 }
