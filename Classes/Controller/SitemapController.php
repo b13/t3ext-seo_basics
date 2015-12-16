@@ -340,7 +340,12 @@ class SitemapController {
 		// add appending slash
 		$this->baseURL = rtrim($baseURL, '/') . '/';
 		$baseURLParts = parse_url($this->baseURL);
-		$this->currentHostName = $baseURLParts['host'];
+		$currentHostName = $baseURLParts['host'];
+		if ($currentHostName !== NULL) {
+			$this->currentHostName = $baseURLParts['host'];
+		} else {
+			$this->currentHostName = $this->baseURL;
+		}
 		return $this->baseURL;
 	}
 
