@@ -9,6 +9,7 @@ It is compatible with TYPO3 CMS 6.2+. You can get it here: http://typo3.org/exte
 
 What does it do?
 ----------------
+
 This extension bundles most SEO features needed for getting a simple website going with search engine optimizations.
 Well – so what does it do? - It adds an extra field to every page for manipulating the <title>-tag of the page.
 Since this is – next to the content – the most important data for a search engine of a web page, it deserves an extra
@@ -36,6 +37,7 @@ There is no need for an extra “google sitemap” extension, no need for an ext
 
 Why did we create this extension?
 ---------------------------------
+
 Well, first of all... we did quite some research and did some tests with pages to see how manipulating e.g. the page
 title or the description affects the ranking and also the output on the search result pages. We then found out what is
 important for the search engines and what they care about. Then we tried out several extensions but we noticed that they
@@ -47,6 +49,7 @@ configuration and without dozens of not-quite-perfect extensions.
 
 ToDo
 ----
+
 * Check all labels
 * Release 1.0
 * Add new og: fields
@@ -55,6 +58,7 @@ ToDo
 
 Credits
 -------
+
 Pull Requests are very welcome!
 
 * Thanks to EDV-Sachverständigenbüro Weißleder Stuttgart (www.weissleder.de) and ITANA (www.itana.com) for sponsoring the initial development of this extension.
