@@ -358,7 +358,7 @@ class SitemapController {
 	 */
 	protected function fetchPagesFromTreeStructure($id) {
 		$depth = 50;
-		$additionalFields = 'uid,pid,doktype,shortcut,crdate,SYS_LASTCHANGED';
+		$additionalFields = 'uid,pid,doktype,shortcut,crdate,SYS_LASTCHANGED,shortcut_mode';
 
 		// Initializing the tree object
 		$treeStartingRecord = $this->getFrontendController()->sys_page->getRawRecord('pages', $id, $additionalFields);
