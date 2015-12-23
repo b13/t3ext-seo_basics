@@ -340,7 +340,12 @@ class SitemapController {
 		// add appending slash
 		$this->baseURL = rtrim($baseURL, '/') . '/';
 		$baseURLParts = parse_url($this->baseURL);
-		$this->currentHostName = $baseURLParts['host'];
+		$currentHostName = $baseURLParts['host'];
+		if ($currentHostName !== NULL) {
+			$this->currentHostName = $baseURLParts['host'];
+		} else {
+			$this->currentHostName = $this->baseURL;
+		}
 		return $this->baseURL;
 	}
 
@@ -353,7 +358,7 @@ class SitemapController {
 	 */
 	protected function fetchPagesFromTreeStructure($id) {
 		$depth = 50;
-		$additionalFields = 'uid,pid,doktype,shortcut,crdate,SYS_LASTCHANGED';
+		$additionalFields = 'uid,pid,doktype,shortcut,crdate,SYS_LASTCHANGED,shortcut_mode';
 
 		// Initializing the tree object
 		$treeStartingRecord = $this->getFrontendController()->sys_page->getRawRecord('pages', $id, $additionalFields);
