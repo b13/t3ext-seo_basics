@@ -1,56 +1,20 @@
 <?php
+defined('TYPO3_MODE') or die();
 
-if (!defined('TYPO3_MODE')) {
-	die('Access denied.');
-}
-
-
-	// Adding Web>Info module for SEO management
-if (TYPO3_MODE == 'BE') {
-	t3lib_extMgm::insertModuleFunction(
+// Adding Web>Info module for SEO management
+if (TYPO3_MODE === 'BE') {
+	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::insertModuleFunction(
 		'web_info',
-		'tx_seobasics_modfunc1',
-		t3lib_extMgm::extPath($_EXTKEY) . 'modfunc1/class.tx_seobasics_modfunc1.php',
-		'LLL:EXT:seo_basics/Resources/Private/Language/db.xml:moduleFunction.tx_seobasics_modfunc1',
-		'function',
-		'online'
+		'B13\\SeoBasics\\BackendModule\\SeoModule',
+		'',
+		'LLL:EXT:seo_basics/Resources/Private/Language/db.xml:module.title',
+		'function'
 	);
 }
 
 
+// Adding a static template TypoScript configuration from static/ (deprecated)
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('seo_basics', 'static', 'Metatags and XML Sitemap (old), simple replaced by new one');
 
-	// Adding title tag field to pages TCA
-$tmpCol = array(
-	'tx_seo_titletag' => array(
-		'exclude' => 1,
-		'label' => 'LLL:EXT:seo_basics/Resources/Private/Language/db.xml:pages.titletag',
-		'config' => Array (
-			'type' => 'input',
-			'size' => '70',
-			'max' => '70',
-			'eval' => 'trim'
-		)
-	),
-	'tx_seo_canonicaltag' => array(
-		'exclude' => 1,
-		'label' => 'LLL:EXT:seo_basics/Resources/Private/Language/db.xml:pages.canonicaltag',
-		'config' => Array (
-			'type' => 'input',
-			'size' => '70',
-			'max' => '70',
-			'eval' => 'trim'
-		)
-	)
-);
-t3lib_extMgm::addTCAcolumns('pages', $tmpCol, 1);
-t3lib_extMgm::addTCAcolumns('pages_language_overlay', $tmpCol, 1);
-
-t3lib_extMgm::addToAllTCAtypes('pages', 'tx_seo_titletag;;;;, tx_seo_canonicaltag', 1, 'before:keywords');
-t3lib_extMgm::addToAllTCAtypes('pages_language_overlay', 'tx_seo_titletag, tx_seo_canonicaltag, nav_title, tx_realurl_pathsegment;;;;', "4,5", 'after:subtitle');
-
-$TCA['pages_language_overlay']['interface']['showRecordFieldList'] .= ',tx_seo_titletag, tx_seo_canonicaltag';
-
-
-	// Adding a static template TypoScript configuration from static/
-t3lib_extMgm::addStaticFile($_EXTKEY, 'static', 'Metatags and XML Sitemap');
-
+// Adding the static template for new TypoScript
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('seo_basics', 'Configuration/TypoScript', 'Metatags and XML Sitemap');

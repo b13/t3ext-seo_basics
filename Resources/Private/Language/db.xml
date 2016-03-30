@@ -8,12 +8,12 @@
 		<languageKey index="default" type="array">
 			<label index="pages.titletag">&lt;title&gt; Tag:</label>
 			<label index="pages.canonicaltag">Canonical URL:</label>
-			<label index="moduleFunction.tx_seobasics_modfunc1">SEO Management</label>
+			<label index="module.title">SEO Management</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="pages.titletag">Title Tag:</label>
 			<label index="pages.canonicaltag">Canonical URL:</label>
-			<label index="moduleFunction.tx_seobasics_modfunc1">SEO Management</label>
+			<label index="module.title">SEO Management</label>
 		</languageKey>
 	</data>
 </T3locallang>
