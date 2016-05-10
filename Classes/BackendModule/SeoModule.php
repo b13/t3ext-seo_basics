@@ -197,7 +197,9 @@ class SeoModule extends \TYPO3\CMS\Backend\Module\AbstractFunctionModule {
 			// load language overlays and path cache for all pages shown
 			$uidList = $GLOBALS['TYPO3_DB']->cleanIntList(implode(',', $pages));
 			$this->loadLanguageOverlays($uidList);
-			$this->loadPathCache($uidList);
+			if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('realurl')) {
+				$this->loadPathCache($uidList);
+			}
 
 			// Render information table
 			$content .= $this->renderSaveButtons();
