@@ -105,9 +105,14 @@ class SitemapController {
 			$conf = array(
 				'parameter' => $item['uid']
 			);
+
+				// skip pages with "Hide default translation of page"
+			if (!$this->pageIsAvailableInRequestedTranslation($item, $this->getFrontendController()->sys_language_uid)) {
+				continue;
+			}
 				// also allow different languages
 			if (!empty($this->getFrontendController()->sys_language_uid)) {
-				$conf['additionalParams'] = '&L=' . $this->getFrontendController()->sys_language_uid;
+				$conf['additionalParams'] = '&L=' . GeneralUtility::_GET('L');
 			}
 
 				// create the final URL
@@ -236,6 +241,50 @@ class SitemapController {
 		}
 	}
 
+	/**
+	 * Returns TRUE if the given page is available in the requested language.
+	 *
+	 * @param array $pageData
+	 * @param int $requestedLanguageUid
+	 * @return boolean
+	 */
+	protected function pageIsAvailableInRequestedTranslation($pageData, $requestedLanguageUid)
+	{
+		$requestedLanguageUid = (int)$requestedLanguageUid;
+
+		// No valid subpage if the default language should be shown and the page settings
+		// are excluding the visibility of the default language.
+		if ($requestedLanguageUid === 0 && GeneralUtility::hideIfDefaultLanguage($pageData['l18n_cfg'])) {
+			return false;
+		}
+		// No valid subpage if the alternative language should be shown and the page settings
+		// are requiring a valid overlay but it doesn't exists.
+		$hideIfNotTranslated = GeneralUtility::hideIfNotTranslated($pageData['l18n_cfg']);
+		if (
+			$requestedLanguageUid > 0
+			&& $hideIfNotTranslated
+			&& (!$this->pageHasLanguageOverlay($pageData['uid'], $requestedLanguageUid))
+		) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * @param int $pageUid
+	 * @param int $sysLanuageUid
+	 * @return bool
+	 */
+	protected function pageHasLanguageOverlay($pageUid, $sysLanuageUid) {
+		$overlay = $this->getFrontendController()->sys_page->getRecordsByField(
+			'pages_language_overlay',
+			'pid',
+			$pageUid,
+			'AND sys_language_uid = ' . (int)$sysLanuageUid
+		);
+		return !empty($overlay);
+	}
 
 	/**
 	 * function to fetch all links from a page
@@ -358,7 +407,7 @@ class SitemapController {
 	 */
 	protected function fetchPagesFromTreeStructure($id) {
 		$depth = 50;
-		$additionalFields = 'uid,pid,doktype,shortcut,crdate,SYS_LASTCHANGED,shortcut_mode';
+		$additionalFields = 'uid,pid,doktype,shortcut,crdate,SYS_LASTCHANGED,shortcut_mode,l18n_cfg';
 
 		// Initializing the tree object
 		$treeStartingRecord = $this->getFrontendController()->sys_page->getRawRecord('pages', $id, $additionalFields);
@@ -390,6 +439,7 @@ class SitemapController {
 		$tree->addField('no_search', 1);
 		$tree->addField('doktype', 1);
 		$tree->addField('nav_hide', 1);
+		$tree->addField('l18n_cfg', 1);
 
 			// disable recycler and everything below
 		$tree->init('AND doktype!=255' . $this->getFrontendController()->sys_page->enableFields('pages'));
