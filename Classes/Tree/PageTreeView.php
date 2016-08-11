@@ -27,6 +27,7 @@ namespace B13\SeoBasics\Tree;
  *  THE SOFTWARE.
  ***************************************************************/
 
+use PDO;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
@@ -131,7 +132,7 @@ class PageTreeView extends \TYPO3\CMS\Backend\Tree\View\PageTreeView {
 	/**
 	 * Getting the tree data: next entry
 	 *
-	 * @param mixed $res Data handle
+	 * @param \Doctrine\DBAL\Driver\Mysqli\MysqliStatement $res Data handle
 	 * @param string $subCSSclass CSS class for sub elements (workspace related)
 	 * @return array item data array OR FALSE if end of elements.
 	 * @access private
@@ -146,7 +147,7 @@ class PageTreeView extends \TYPO3\CMS\Backend\Tree\View\PageTreeView {
 			}
 			return $row;
 		} else {
-			while ($row = @$GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+			while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
 				if (is_array($row)) {
 					break;
 				}
