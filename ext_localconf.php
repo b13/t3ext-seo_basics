@@ -2,7 +2,7 @@
 defined('TYPO3_MODE') or die();
 
 // adding th tx_seo_titletag to the pageOverlayFields so it is recognized when fetching the overlay fields
-$GLOBALS['TYPO3_CONF_VARS']['FE']['pageOverlayFields'] .= ',tx_seo_titletag,tx_seo_canonicaltag';
+$GLOBALS['TYPO3_CONF_VARS']['FE']['pageOverlayFields'] .= ',tx_seo_titletag,tx_seo_canonicaltag,tx_seo_robots';
 
 $extensionConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['seo_basics']);
 

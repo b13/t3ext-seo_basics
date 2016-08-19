@@ -66,6 +66,18 @@ plugin.tx_seobasics {
 	60.if.isTrue = {$plugin.tx_seo.enableCanonicalTag}
 	60.stdWrap >
 	60.wrap = <link rel="canonical" href="|" />
+
+	# add robots tag
+	70 = CASE
+	70.key.field = tx_seo_robots
+	70.1 = TEXT
+	70.1.value = noindex
+	70.2 = TEXT
+	70.2.value = noindex,follow
+	70.3 = TEXT
+	70.3.value = index,nofollow
+	70.stdWrap.wrap = <meta name="robots" content=" | " />
+	70.stdWrap.append < .5
 }
 
 

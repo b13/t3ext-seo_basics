@@ -3,7 +3,8 @@
 #
 CREATE TABLE pages (
 	tx_seo_titletag tinytext,
-	tx_seo_canonicaltag tinytext
+	tx_seo_canonicaltag tinytext,
+	tx_seo_robots tinytext
 );
 
 #
@@ -11,5 +12,6 @@ CREATE TABLE pages (
 #
 CREATE TABLE pages_language_overlay (
 	tx_seo_titletag tinytext,
-	tx_seo_canonicaltag tinytext
+	tx_seo_canonicaltag tinytext,
+	tx_seo_robots tinytext
 );
