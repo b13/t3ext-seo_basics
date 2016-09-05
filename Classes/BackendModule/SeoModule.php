@@ -423,7 +423,7 @@ class SeoModule extends \TYPO3\CMS\Backend\Module\AbstractFunctionModule {
 		$where = ($this->langOnly || $this->langOnly === 0 ? ' AND language_id = ' . $this->langOnly : '');
 
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'page_id, language_id, pagepath, cache_id ',
+			'page_id, language_id, pagepath',
 			'tx_realurl_pathcache',
 			'page_id IN ('. $uidList .') ' . $where,
 			'',
