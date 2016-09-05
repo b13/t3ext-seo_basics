@@ -8,11 +8,21 @@
 		<languageKey index="default" type="array">
 			<label index="pages.titletag">&lt;title&gt; Tag:</label>
 			<label index="pages.canonicaltag">Canonical URL:</label>
+			<label index="pages.noindex">Add &quot;noindex&quot; tag</label>
+			<label index="pages.nofollow">Add &quot;nofollow&quot; tag</label>
+			<label index="pages.follow">Add &quot;follow&quot; tag (for noindex,follow)</label>
+			<label index="pages.tx_seo_robots">Additional meta &quot;robots&quot; tags for this page</label>
+			<label index="pages.tx_seo_robots.I.0">no additional configuration</label>
+			<label index="pages.tx_seo_robots.I.1">noindex</label>
+			<label index="pages.tx_seo_robots.I.2">noindex,follow</label>
+			<label index="pages.tx_seo_robots.I.3">index,nofollow</label>
 			<label index="module.title">SEO Management</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="pages.titletag">Title Tag:</label>
 			<label index="pages.canonicaltag">Canonical URL:</label>
+			<label index="pages.tx_seo_robots">Zusätzliche &quot;robots&quot;-Metatags für diese Seite</label>
+			<label index="pages.tx_seo_robots.I.0">keine zusätzliche Konfiguration</label>
 			<label index="module.title">SEO Management</label>
 		</languageKey>
 	</data>
