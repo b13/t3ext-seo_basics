@@ -27,7 +27,6 @@ namespace B13\SeoBasics\Service;
  *  THE SOFTWARE.
  ***************************************************************/
 
-use TYPO3\CMS\Core\Utility\ArrayUtility;
 use \TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -70,7 +69,9 @@ class UrlService {
 				),
 				'forceAbsoluteUrl' => 1
 			);
-			ArrayUtility::mergeRecursiveWithOverrule($configuration, $conf['userFunc.']);
+			if (is_array($conf['userFunc.'])) {
+				array_replace_recursive($configuration, $conf['userFunc.']);
+			}
 			$url = $this->getFrontendController()->cObj->typoLink_URL($configuration);
 			$url = $this->getFrontendController()->baseUrlWrap($url);
 
