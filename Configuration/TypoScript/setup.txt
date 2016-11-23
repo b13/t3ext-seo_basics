@@ -78,6 +78,7 @@ plugin.tx_seobasics {
 	70.3.value = index,nofollow
 	70.stdWrap.wrap = <meta name="robots" content=" | " />
 	70.stdWrap.append < .5
+	70.if.isTrue.field = tx_seo_robots
 }
 
 
