@@ -67,7 +67,7 @@ class SeoModule extends \TYPO3\CMS\Backend\Module\AbstractFunctionModule {
 	 *
 	 * @return	array
 	 */
-	public function init($pObj, $conf) {
+	public function init(&$pObj, $conf) {
 		// load languages
 		$trans = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Configuration\\TranslationConfigurationProvider');
 		$this->sysLanguages = $trans->getSystemLanguages($pObj->id, $GLOBALS['BACK_PATH']);
