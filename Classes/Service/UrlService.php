@@ -55,7 +55,7 @@ class UrlService {
 
 			if ($this->getFrontendController()->MP) {
 				$mountPointInUse = TRUE;
-				$GLOBALS['TYPO3_CONF_VARS']['FE']['enable_mount_pids'] = 0;
+				$GLOBALS['TYPO3_CONF_VARS']['FE']['enable_mount_pids'] = 1;
 				$MP = $this->getFrontendController()->MP;
 				$this->getFrontendController()->MP = '';
 			}
