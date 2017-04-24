@@ -135,7 +135,7 @@ class SeoModule extends \TYPO3\CMS\Backend\Module\AbstractFunctionModule {
 
 			// Add Javascript
 			$this->pObj->doc->getPageRenderer()->loadJquery();
-			$this->pObj->doc->getPageRenderer()->addJsFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('seo_basics') . 'Resources/Public/JavaScript/SeoModule.js');
+			$this->pObj->doc->getPageRenderer()->addJsFile(GeneralUtility::getFileAbsFileName('EXT:seo_basics/Resources/Public/JavaScript/SeoModule.js'));
 
 
 			// render depth selector
