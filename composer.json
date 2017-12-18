@@ -9,15 +9,11 @@
     "issues": "https://github.com/b13/t3ext-seo_basics/issues"
   },
   "require": {
-    "typo3/cms-core": ">=6.2.0,<9.0"
+    "typo3/cms-core": "^8.7,<9.0"
   },
   "autoload": {
     "psr-4": {
       "B13\\SeoBasics\\": "Classes/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
     }
   },
   "suggest": {
