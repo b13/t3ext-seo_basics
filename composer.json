@@ -4,7 +4,7 @@
   "version": "0.9.1",
   "description": "Basic SEO features for TYPO3",
   "homepage": "https://github.com/b13/t3ext-seo_basics",
-  "license": ["MIT License"],
+  "license": ["GPL-2.0-or-later"],
   "keywords": ["TYPO3 CMS", "SEO Basics"],
   "support": {
     "issues": "https://github.com/b13/t3ext-seo_basics/issues"
