@@ -26,6 +26,7 @@ $additionalColumns = array(
         'label'   => 'LLL:EXT:seo_basics/Resources/Private/Language/db.xml:pages.tx_seo_robots',
         'config' => array(
             'type' => 'select',
+            'renderType' => 'selectSingle',
             'minitems' => 1,
             'maxitems' => 1,
             'size' => 1,
