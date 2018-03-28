@@ -9,7 +9,7 @@ $extensionConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extCon
 	// registering sitemap.xml for each hierachy of configuration to realurl (meaning to every website in a multisite installation)
 if ($extensionConfiguration['xmlSitemap'] == '1') {
 	$realurl = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['realurl'];
-	$hooks = array('encodeSpURL_postProc', 'decodeSpURL_preProc', 'getHost');
+    $hooks = array('encodeSpURL_earlyHook', 'encodeSpURL_postProc', 'decodeSpURL_preProc', 'getHost', 'ConfigurationReader_postProc', 'storeInUrlCache');
 	if (is_array($realurl))	{
 		foreach ($realurl as $host => $cnf) {
 			// we won't do anything with string pointer (e.g. example.org => www.example.org)
