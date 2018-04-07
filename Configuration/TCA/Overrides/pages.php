@@ -36,6 +36,9 @@ $additionalColumns = array(
                 array('LLL:EXT:seo_basics/Resources/Private/Language/db.xml:pages.tx_seo_robots.I.2', '2'),
                 array('LLL:EXT:seo_basics/Resources/Private/Language/db.xml:pages.tx_seo_robots.I.3', '3'),
             ),
+            'behaviour' => array(
+                'allowLanguageSynchronization' => true
+            )
         )
     ),
  );
