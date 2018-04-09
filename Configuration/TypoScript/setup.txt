@@ -69,7 +69,7 @@ plugin.tx_seobasics {
 
 	# add robots tag
 	70 = CASE
-	70.key.field = tx_seo_robots
+	70.key.data = page:tx_seo_robots
 	70.1 = TEXT
 	70.1.value = noindex
 	70.2 = TEXT
