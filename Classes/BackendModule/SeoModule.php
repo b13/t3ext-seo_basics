@@ -27,7 +27,6 @@ namespace B13\SeoBasics\BackendModule;
  *  THE SOFTWARE.
  ***************************************************************/
 
-use TYPO3\CMS\Backend\Module\BaseScriptClass;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -160,7 +159,7 @@ class SeoModule extends \TYPO3\CMS\Backend\Module\AbstractFunctionModule
 
             // Add Javascript
             $this->getPageRenderer()->loadJquery();
-            $this->getPageRenderer()->addJsFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('seo_basics') . 'Resources/Public/JavaScript/SeoModule.js');
+            $this->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/SeoBasics/SeoModule');
 
 
             // render depth selector
