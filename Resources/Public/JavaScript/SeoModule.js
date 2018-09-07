@@ -25,7 +25,8 @@
 /**
  * simple JavaScript functionality for highlighting text fields
  */
-;(function($) {
+define(['jquery'], function($) {
+
 	var seoColor = {
 		yellow: "#ffff70",
 		red: "#ff8040",
@@ -93,5 +94,4 @@
 	$(document).ready(function() {
 		initialize();
 	});
-
-})(TYPO3.jQuery);
+});
