@@ -27,6 +27,8 @@ namespace B13\SeoBasics\BackendModule;
  *  THE SOFTWARE.
  ***************************************************************/
 
+use TYPO3\CMS\Backend\Module\BaseScriptClass;
+use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Imaging\Icon;
@@ -85,17 +87,16 @@ class SeoModule extends \TYPO3\CMS\Backend\Module\AbstractFunctionModule
      * Initialize the object
      *
      * @param BaseScriptClass $pObj A reference to the parent (calling) object
-     * @param array $conf The configuration set for this module - from global array TBE_MODULES_EXT
      * @throws \RuntimeException
      * @see \TYPO3\CMS\Backend\Module\BaseScriptClass::checkExtObj()
      */
-    public function init(&$pObj, $conf)
+    public function init($pObj)
     {
         $trans = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Configuration\TranslationConfigurationProvider::class);
         $this->sysLanguages = $trans->getSystemLanguages($this->pObj->id);
         // see if multiple languages exist in the system (array includes more than "0" (default) and "-1" (all))
         $this->hasAvailableLanguages = (count($this->sysLanguages) > 2);
-        parent::init($pObj, $conf);
+        parent::init($pObj);
     }
 
     /**
@@ -538,7 +539,8 @@ class SeoModule extends \TYPO3\CMS\Backend\Module\AbstractFunctionModule
             $addParams .= '&hideDisabled=' . $hideDisabled;
         }
 
-        return BackendUtility::getModuleUrl(GeneralUtility::_GET('M'), ['id' => $this->pObj->id]) . $addParams;
+        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
+        return $uriBuilder->buildUriFromRoute('web_info', ['id' => $this->pObj->id]) . $addParams;
     }
 
 
