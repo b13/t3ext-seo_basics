@@ -28,6 +28,7 @@ namespace B13\SeoBasics\Service;
  ***************************************************************/
 
 use \TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Class UrlService provides some PHP functionality to detect
@@ -91,13 +92,19 @@ class UrlService {
 				if (!$scheme) {
 					$scheme = 'http';
 				}
-    			$url =  $scheme . '://' . $domain . $urlParts['path'];
+				$url =  $scheme . '://' . $domain . $urlParts['path'];
 			} elseif (empty($urlParts['scheme'])) {
-				$pageWithDomains = $this->getFrontendController()->findDomainRecord();
+				// Method was removed in 9.3
+				if (method_exists(TypoScriptFrontendController::class, 'findDomainRecord')) {
+					$pageWithDomains = $this->getFrontendController()->findDomainRecord();
+				} else {
+					$pageWithDomains = $this->getFrontendController()->domainStartPage;
+				}
 				// get first domain record of that page
 				$allDomains = $this->getFrontendController()->sys_page->getRecordsByField(
 					'sys_domain',
-					'pid', $pageWithDomains,
+					'pid',
+					$pageWithDomains,
 					'AND redirectTo = ""' . $this->getFrontendController()->sys_page->enableFields('sys_domain'),
 					'',
 					'sorting ASC'
@@ -119,7 +126,7 @@ class UrlService {
 
 	/**
 	 * wrapper function for the current TSFE object
-	 * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+	 * @return TypoScriptFrontendController
 	 */
 	protected function getFrontendController() {
 		return $GLOBALS['TSFE'];
