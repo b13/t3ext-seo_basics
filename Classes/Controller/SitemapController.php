@@ -28,6 +28,7 @@ namespace B13\SeoBasics\Controller;
  ***************************************************************/
 
 use \TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * This package includes all functions for generating XML sitemaps
@@ -375,7 +376,12 @@ class SitemapController
         }
 
         if (empty($baseURL)) {
-            $domainPid = $this->getFrontendController()->findDomainRecord();
+            // Method was removed in 9.3
+            if (method_exists(TypoScriptFrontendController::class, 'findDomainRecord')) {
+                $domainPid = $this->getFrontendController()->findDomainRecord();
+            } else {
+                $domainPid = $this->getFrontendController()->domainStartPage;
+            }
             if ($domainPid) {
                 $domainRecords = $this->getFrontendController()->sys_page->getRecordsByField(
                     'sys_domain',
