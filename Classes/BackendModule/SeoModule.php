@@ -27,19 +27,44 @@ namespace B13\SeoBasics\BackendModule;
  *  THE SOFTWARE.
  ***************************************************************/
 
+use TYPO3\CMS\Backend\Module\BaseScriptClass;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
+use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 /**
  * SEO Management module
  */
-class SeoModule extends \TYPO3\CMS\Backend\Module\AbstractFunctionModule
+class SeoModule
 {
+    /**
+     * Contains a reference to the parent (calling) object (which is probably an instance of
+     * an extension class to \TYPO3\CMS\Backend\Module\BaseScriptClass
+     *
+     * @var BaseScriptClass
+     * @see init()
+     */
+    protected $pObj;
+
+    /**
+     * @var PageRenderer
+     */
+    protected $pageRenderer;
+
+    /**
+     * Can be hardcoded to the name of a locallang.xlf file (from the same directory as the class file) to use/load
+     * and is included / added to $GLOBALS['LOCAL_LANG']
+     *
+     * @see init()
+     * @var string
+     */
+    protected $localLangFile = '';
 
     /**
      * loaded languages
@@ -95,7 +120,13 @@ class SeoModule extends \TYPO3\CMS\Backend\Module\AbstractFunctionModule
         $this->sysLanguages = $trans->getSystemLanguages($this->pObj->id);
         // see if multiple languages exist in the system (array includes more than "0" (default) and "-1" (all))
         $this->hasAvailableLanguages = (count($this->sysLanguages) > 2);
-        parent::init($pObj);
+        $this->pObj = $pObj;
+
+        if (!empty($this->localLangFile)) {
+            $this->getLanguageService()->includeLLFile($this->localLangFile);
+        }
+        // Setting MOD_MENU items as we need them for logging:
+        $this->pObj->MOD_MENU = array_merge($this->pObj->MOD_MENU, $this->modMenu());
     }
 
     /**
@@ -175,16 +206,16 @@ class SeoModule extends \TYPO3\CMS\Backend\Module\AbstractFunctionModule
 
             $content .= BackendUtility::getFuncCheck($id, 'SET[hideShortcuts]',
                 $this->pObj->MOD_SETTINGS['hideShortcuts'], '', '', 'id="SET[hideShortcuts]"');
-            $content .= '<label for="SET[hideShortcuts]">Hide Shortcuts</label>&nbsp;&nbsp;';
+            $content .= '&nbsp;  <label for="SET[hideShortcuts]">Hide Shortcuts</label>&nbsp;&nbsp;';
             $content .= BackendUtility::getFuncCheck($id, 'SET[hideDisabled]',
                 $this->pObj->MOD_SETTINGS['hideDisabled'], '', '', 'id="SET[hideDisabled]"');
-            $content .= '<label for="SET[hideDisabled]">Hide Disabled Pages</label>&nbsp;&nbsp;<br/>';
+            $content .= '&nbsp;<label for="SET[hideDisabled]">Hide Disabled Pages</label>&nbsp;&nbsp;<br/>';
             $content .= BackendUtility::getFuncCheck($id, 'SET[hideSysFolders]',
                 $this->pObj->MOD_SETTINGS['hideSysFolders'], '', '', 'id="SET[hideSysFolders]"');
-            $content .= '<label for="SET[hideSysfolders]">Hide System Folders</label>&nbsp;&nbsp;<br/>';
+            $content .= '&nbsp;<label for="SET[hideSysfolders]">Hide System Folders</label>&nbsp;&nbsp;<br/>';
             $content .= BackendUtility::getFuncCheck($id, 'SET[hideNotInMenu]',
                 $this->pObj->MOD_SETTINGS['hideNotInMenu'], '', '', 'id="SET[hideNotInMenu]"');
-            $content .= '<label for="SET[hideNotInMenu]">Hide Not in menu</label>&nbsp;&nbsp;<br/>';
+            $content .= '&nbsp;<label for="SET[hideNotInMenu]">Hide Not in menu</label>&nbsp;&nbsp;<br/>';
 
             // Save previous editing when submit was hit
             $this->saveChanges();
@@ -226,7 +257,6 @@ class SeoModule extends \TYPO3\CMS\Backend\Module\AbstractFunctionModule
 
             // load language overlays and path cache for all pages shown
             $uidList = array_map('intval', $pages);
-            $uidList = implode(',', $uidList);
             $this->loadLanguageOverlays($uidList);
             if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('realurl')) {
                 $this->loadPathCache($uidList);
@@ -432,7 +462,7 @@ class SeoModule extends \TYPO3\CMS\Backend\Module\AbstractFunctionModule
             ->from('pages_language_overlay')
             ->where(
                 $queryBuilder->expr()->in('pid', $queryBuilder->createNamedParameter(
-                    GeneralUtility::intExplode(',', $uidList, true),
+                    $uidList,
                     Connection::PARAM_INT_ARRAY)
                 )
             )
@@ -465,26 +495,39 @@ class SeoModule extends \TYPO3\CMS\Backend\Module\AbstractFunctionModule
      * Loads the path cache from the RealURL extension table to
      * display it later in the table
      *
-     * @param string $uidList The Page Uids
+     * @param array $uidList The Page Uids
      * @return void
      */
-    protected function loadPathCache($uidList)
+    protected function loadPathCache(array $uidList)
     {
-
-        // building where clause
-        $where = ($this->langOnly || $this->langOnly === 0 ? ' AND language_id = ' . $this->langOnly : '');
-
-        $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'page_id, language_id, pagepath',
-            'tx_realurl_pathcache',
-            'page_id IN (' . $uidList . ') ' . $where,
-            '',
-            'language_id ASC, expire ASC'
+        if (empty($uidList)) {
+            return;
+        }
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_realurl_pathcache');
+        $constraints = [];
+        $constraints[] = $queryBuilder->expr()->in(
+            'page_id',
+             $uidList
         );
+
+        if ($this->langOnly || $this->langOnly === 0) {
+            $constraints[] = $queryBuilder->expr()->eq(
+                'language_id',
+                $queryBuilder->createNamedParameter($this->langOnly, \PDO::PARAM_INT)
+            );
+        }
+
+        $rows = $queryBuilder->select('page_id', 'language_id', 'pagepath')
+            ->from('tx_realurl_pathcache')
+            ->where(...$constraints)
+            ->addOrderBy('language_id', 'ASC')
+            ->addOrderBy('expire', 'ASC')
+            ->execute()
+            ->fetchAll();
 
         // Traverse result
         $this->pathCaches = [];
-        while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+        foreach ($rows as $row) {
             $this->pathCaches[$row['page_id']][$row['language_id']] = $row['pagepath'];
         }
     }
@@ -546,7 +589,6 @@ class SeoModule extends \TYPO3\CMS\Backend\Module\AbstractFunctionModule
     /**
      * Will look for submitted SEO / page entries to save to DB
      *
-     * @todo: use DataHandler or tce_db.php for that
      * @return    void
      */
     protected function saveChanges()
@@ -563,7 +605,7 @@ class SeoModule extends \TYPO3\CMS\Backend\Module\AbstractFunctionModule
             }
 
             $emptyItems = [];
-
+            $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
             // run through every item in the table
             foreach ($res as $uid => $item) {
                 $uid = intval($uid);
@@ -577,22 +619,46 @@ class SeoModule extends \TYPO3\CMS\Backend\Module\AbstractFunctionModule
                     'keywords' => $item['keywords'],
                     'description' => $item['description'],
                 ];
-                $conn = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($tbl);
+                $conn = $connectionPool->getConnectionForTable($tbl);
                 $conn->update($tbl, $fields, ['uid' => $uid]);
             }
 
             // set all items where all fields all empty at once to save time
             if (count($emptyItems)) {
-                $uidList = array_map('intval', $emptyItems);
-                $uidList = implode(',', $uidList);
-
-                $fields = [
-                    'tx_seo_titletag' => '',
-                    'keywords' => '',
-                    'description' => '',
-                ];
-                $GLOBALS['TYPO3_DB']->exec_UPDATEquery($tbl, 'uid IN (' . $uidList . ')', $fields);
+                $queryBuilder = $connectionPool->getQueryBuilderForTable($tbl);
+                $queryBuilder->update($tbl)
+                    ->set('tx_seo_titletag', '')
+                    ->set('keywords', '')
+                    ->set('description', '')
+                    ->where(
+                        $queryBuilder->expr()->in(
+                            'uid',
+                            $emptyItems
+                        )
+                    )
+                    ->execute();
             }
         }
     }
+
+    /**
+     * @return PageRenderer
+     */
+    protected function getPageRenderer()
+    {
+        if ($this->pageRenderer === null) {
+            $this->pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
+        }
+
+        return $this->pageRenderer;
+    }
+
+    /**
+     * @return LanguageService
+     */
+    protected function getLanguageService()
+    {
+        return $GLOBALS['LANG'];
+    }
+
 }
