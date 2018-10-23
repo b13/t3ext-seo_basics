@@ -421,7 +421,7 @@ class SeoModule
             }
         } else {
             // display fields that can be edited
-            $tbl = ($item['sys_language'] > 0 ? 'pages_language_overlay' : 'pages');
+            $tbl = 'pages';
             $fName = 'tx_seo[' . $tbl . '][' . $item['uid'] . ']';
             $row1[] = '<td>Title-Tag:</td><td><input name="' . $fName . '[tx_seo_titletag]" value="' . htmlspecialchars($item['tx_seo_titletag']) . '" type="text" size="43" maxlength="100" autocomplete="off" class="seoTitleTag"/></td><td>Keywords:</td><td><input name="' . $fName . '[keywords]" value="' . htmlspecialchars($item['keywords']) . '" type="text" size="67" maxlength="180" autocomplete="off" class="seoKeywords"/></td>';
             $row2[] = '<td>Description:</td><td colspan="3"><input name="' . $fName . '[description]" value="' . htmlspecialchars($item['description']) . '" type="text" size="120" autocomplete="off" class="seoDescription"/><br/><br/></td>';
@@ -456,17 +456,17 @@ class SeoModule
             return;
         }
 
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages_language_overlay');
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
         $queryBuilder
-            ->select('uid', 'pid', 'sys_language_uid', 'title', 'tx_seo_titletag', 'keywords', 'description')
-            ->from('pages_language_overlay')
+            ->select('uid', 'l10n_parent', 'sys_language_uid', 'title', 'tx_seo_titletag', 'keywords', 'description')
+            ->from('pages')
             ->where(
-                $queryBuilder->expr()->in('pid', $queryBuilder->createNamedParameter(
-                    $uidList,
-                    Connection::PARAM_INT_ARRAY)
+                $queryBuilder->expr()->in(
+                    'l10n_parent',
+                    $queryBuilder->createNamedParameter($uidList, Connection::PARAM_INT_ARRAY)
                 )
             )
-            ->orderBy('pid', 'ASC')->addOrderBy('sys_language_uid', 'ASC');
+            ->orderBy('l10n_parent', 'ASC')->addOrderBy('sys_language_uid', 'ASC');
 
         if ($this->langOnly) {
             $queryBuilder->andWhere(
@@ -486,7 +486,7 @@ class SeoModule
                 'keywords' => $row['keywords'],
                 'description' => $row['description'],
             ];
-            $this->langOverlays[$row['pid']][$row['sys_language_uid']] = $item;
+            $this->langOverlays[$row['l10n_parent']][$row['sys_language_uid']] = $item;
         }
     }
 
@@ -507,7 +507,7 @@ class SeoModule
         $constraints = [];
         $constraints[] = $queryBuilder->expr()->in(
             'page_id',
-             $uidList
+            $uidList
         );
 
         if ($this->langOnly || $this->langOnly === 0) {
@@ -598,9 +598,9 @@ class SeoModule
             return;
         }
 
-        // run through every table (can only be "pages" or "pages_language_overlay")
+        // run through pages
         foreach ($seoData as $tbl => $res) {
-            if ($tbl !== 'pages' && $tbl !== 'pages_language_overlay') {
+            if ($tbl !== 'pages') {
                 continue;
             }
 
