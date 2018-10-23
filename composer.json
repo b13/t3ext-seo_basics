@@ -9,7 +9,7 @@
     "issues": "https://github.com/b13/t3ext-seo_basics/issues"
   },
   "require": {
-    "typo3/cms-core": "<=9.4"
+    "typo3/cms-core": "^9.4.0"
   },
   "autoload": {
     "psr-4": {
