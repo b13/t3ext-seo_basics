@@ -26,3 +26,7 @@ if ($extensionConfiguration['xmlSitemap'] == '1') {
 		$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['realurl'] = $realurl;
 	}
 }
+
+
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['seo_basics']
+    = \B13\SeoBasics\UpgradeWizard\ExtSeoUpgradeWizard::class;
