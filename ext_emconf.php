@@ -22,6 +22,7 @@ $EM_CONF[$_EXTKEY] = [
         'suggests' => [
             'realurl' => '0.0.0-0.0.0',
             'cooluri' => '0.0.0-0.0.0',
+            'seo' => '>=9.5.0'
         ],
     ],
     'suggests' => [
