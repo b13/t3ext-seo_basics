@@ -27,6 +27,7 @@ namespace B13\SeoBasics\Controller;
  *  THE SOFTWARE.
  ***************************************************************/
 
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use \TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -267,10 +268,9 @@ class SitemapController
         // No valid subpage if the alternative language should be shown and the page settings
         // are requiring a valid overlay but it doesn't exists.
         $hideIfNotTranslated = GeneralUtility::hideIfNotTranslated($pageData['l18n_cfg']);
-        if (
-            $requestedLanguageUid > 0
+        if ($requestedLanguageUid > 0
             && $hideIfNotTranslated
-            && (!$this->pageHasLanguageOverlay($pageData['uid'], $requestedLanguageUid))
+            && (!$this->pageHasTranslation($pageData['uid'], $requestedLanguageUid))
         ) {
             return false;
         }
@@ -283,16 +283,30 @@ class SitemapController
      * @param int $sysLanuageUid
      * @return bool
      */
-    protected function pageHasLanguageOverlay($pageUid, $sysLanuageUid)
+    protected function pageHasTranslation($pageUid, $sysLanuageUid)
     {
-        $overlay = $this->getFrontendController()->sys_page->getRecordsByField(
-            'pages_language_overlay',
-            'pid',
-            $pageUid,
-            'AND sys_language_uid = ' . (int)$sysLanuageUid
-        );
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
+        $translatedRow = $queryBuilder->select('*')
+            ->from('pages')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'sys_language_uid',
+                    $queryBuilder->createNamedParameter($sysLanuageUid, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->orX(
+                    $queryBuilder->expr()->eq(
+                        'uid',
+                        $queryBuilder->createNamedParameter($pageUid, \PDO::PARAM_INT)
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'l10n_parent',
+                        $queryBuilder->createNamedParameter($pageUid, \PDO::PARAM_INT)
+                    )
+                )
+            )
+            ->execute()->fetchColumn(0);
 
-        return !empty($overlay);
+        return !empty($translatedRow);
     }
 
     /**
@@ -316,7 +330,6 @@ class SitemapController
 
         $baseUrl = GeneralUtility::getIndpEnv('TYPO3_SITE_URL');
         foreach ($result[1] as $pos => $link) {
-
             if (strpos($result[2][$pos], '"nofollow"') !== false || strpos($result[0][$pos], '"nofollow"') !== false) {
                 continue;
             }
@@ -483,7 +496,6 @@ class SitemapController
             while (!(boolean)$page['is_siteroot'] && $i >= 0) {
                 $i--;
                 $page = $rootLine[$i];
-
             }
         }
 
