@@ -102,10 +102,10 @@ class SitemapController {
 				continue;
 			}
 
-            // remove items with noindex in tx_seo_robots
-            if ($item['tx_seo_robots'] === '1' || $item['tx_seo_robots'] === '2') {
-                continue;
-            }
+			// remove items with noindex in tx_seo_robots
+			if ($item['tx_seo_robots'] === '1' || $item['tx_seo_robots'] === '2') {
+				continue;
+			}
 
 			$conf = array(
 				'parameter' => $item['uid']
@@ -395,7 +395,7 @@ class SitemapController {
 		$tree->addField('no_search', 1);
 		$tree->addField('doktype', 1);
 		$tree->addField('nav_hide', 1);
-        $tree->addField('tx_seo_robots', 1);
+		$tree->addField('tx_seo_robots', 1);
 
 			// disable recycler and everything below
 		$tree->init('AND doktype!=255' . $this->getFrontendController()->sys_page->enableFields('pages'));
