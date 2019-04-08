@@ -103,7 +103,7 @@ class SitemapController {
 			}
 
 			// remove items with noindex in tx_seo_robots
-			if ($item['tx_seo_robots'] === '1' || $item['tx_seo_robots'] === '2') {
+			if ((int)$item['tx_seo_robots'] === 1 || (int)$item['tx_seo_robots'] === 2) {
 				continue;
 			}
 
