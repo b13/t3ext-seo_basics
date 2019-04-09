@@ -104,6 +104,11 @@ class SitemapController
                 continue;
             }
 
+            // remove items with noindex in tx_seo_robots
+            if ((int)$item['tx_seo_robots'] === 1 || (int)$item['tx_seo_robots'] === 2) {
+                continue;
+            }
+
             $conf = [
                 'parameter' => $item['uid'],
             ];
@@ -428,7 +433,7 @@ class SitemapController
     protected function fetchPagesFromTreeStructure($id)
     {
         $depth = 50;
-        $additionalFields = 'uid,pid,doktype,shortcut,crdate,SYS_LASTCHANGED,shortcut_mode,l18n_cfg';
+        $additionalFields = 'uid,pid,doktype,shortcut,crdate,SYS_LASTCHANGED,shortcut_mode,l18n_cfg,tx_seo_robots';
 
         // Initializing the tree object
         $treeStartingRecord = $this->getFrontendController()->sys_page->getRawRecord('pages', $id, $additionalFields);
@@ -465,6 +470,7 @@ class SitemapController
         $tree->addField('doktype', 1);
         $tree->addField('nav_hide', 1);
         $tree->addField('l18n_cfg', 1);
+        $tree->addField('tx_seo_robots', 1);
 
         // disable recycler and everything below
         $tree->init('AND doktype!=255' . $this->getFrontendController()->sys_page->enableFields('pages'));
