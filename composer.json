@@ -17,8 +17,7 @@
     }
   },
   "replace": {
-    "typo3-ter/seo-basics": "*",
-    "seo_basics": "*"
+    "typo3-ter/seo-basics": "*"
   },
   "extra": {
     "typo3/cms": {
@@ -26,8 +25,7 @@
     }
   },
   "suggest": {
-    "realurl": "*",
-    "cooluri": "*",
+    "helhum/realurl": "*",
     "typo3/cms-seo": "^9.5.0"
   }
 }
